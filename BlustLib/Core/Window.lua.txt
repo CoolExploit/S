@@ -1,0 +1,94 @@
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+
+local BlustLib = BlustLib or {}
+
+function BlustLib:CreateWindow(options)
+    local windowName = options.name or "BlustHub"
+    local windowSize = options.size or UDim2.new(0, 500, 0, 350)
+    local windowPosition = options.position or UDim2.new(0.5, -250, 0.5, -175)
+    local backgroundColor = options.color or Color3.fromRGB(30, 30, 30)
+
+    local gui = Instance.new("ScreenGui")
+    gui.Name = windowName
+    gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    gui.ResetOnSpawn = false
+    gui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
+
+    local mainFrame = Instance.new("Frame")
+    mainFrame.Name = "MainFrame"
+    mainFrame.Size = windowSize
+    mainFrame.Position = windowPosition
+    mainFrame.BackgroundColor3 = backgroundColor
+    mainFrame.BorderSizePixel = 0
+    mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    mainFrame.Parent = gui
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 12)
+    corner.Parent = mainFrame
+
+    local title = Instance.new("TextLabel")
+    title.Name = "Title"
+    title.Text = windowName
+    title.Size = UDim2.new(1, 0, 0, 40)
+    title.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.TextSize = 18
+    title.Font = Enum.Font.GothamBold
+    title.Parent = mainFrame
+
+    local titleCorner = Instance.new("UICorner")
+    titleCorner.CornerRadius = UDim.new(0, 12)
+    titleCorner.Parent = title
+
+    local padding = Instance.new("UIPadding")
+    padding.PaddingLeft = UDim.new(0, 10)
+    padding.Parent = title
+
+    local contentHolder = Instance.new("Frame")
+    contentHolder.Name = "ContentHolder"
+    contentHolder.Size = UDim2.new(1, -20, 1, -60)
+    contentHolder.Position = UDim2.new(0, 10, 0, 50)
+    contentHolder.BackgroundTransparency = 1
+    contentHolder.Parent = mainFrame
+
+    -- Dragging Logic (only via title bar)
+    local dragging = false
+    local dragStart, startPos
+
+    title.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            dragStart = input.Position
+            startPos = mainFrame.Position
+        end
+    end)
+
+    UserInputService.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local delta = input.Position - dragStart
+            mainFrame.Position = UDim2.new(
+                startPos.X.Scale,
+                startPos.X.Offset + delta.X,
+                startPos.Y.Scale,
+                startPos.Y.Offset + delta.Y
+            )
+        end
+    end)
+
+    UserInputService.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+
+    return {
+        GUI = gui,
+        Main = mainFrame,
+        Content = contentHolder,
+        Title = title
+    }
+end
+
+return BlustLib
