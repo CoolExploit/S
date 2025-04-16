@@ -1,0 +1,38 @@
+local BlustLib = BlustLib or {}
+
+function BlustLib:CreateParagraph(section, title, content)
+    -- Create paragraph frame
+    local paragraphFrame = Instance.new("Frame")
+    paragraphFrame.Name = "ParagraphFrame"
+    paragraphFrame.Size = UDim2.new(1, -12, 0, 80)
+    paragraphFrame.BackgroundTransparency = 1
+    paragraphFrame.Parent = section
+
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Name = "TitleLabel"
+    titleLabel.Text = title or "Paragraph Title"
+    titleLabel.Size = UDim2.new(1, 0, 0, 20)
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.TextSize = 16
+    titleLabel.Font = Enum.Font.GothamSemibold
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    titleLabel.Parent = paragraphFrame
+
+    local contentLabel = Instance.new("TextLabel")
+    contentLabel.Name = "ContentLabel"
+    contentLabel.Text = content or "This is a paragraph content."
+    contentLabel.Size = UDim2.new(1, 0, 1, -20)
+    contentLabel.BackgroundTransparency = 1
+    contentLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    contentLabel.TextSize = 14
+    contentLabel.Font = Enum.Font.Gotham
+    contentLabel.TextXAlignment = Enum.TextXAlignment.Left
+    contentLabel.TextYAlignment = Enum.TextYAlignment.Top
+    contentLabel.TextWrap = true
+    contentLabel.Parent = paragraphFrame
+
+    return paragraphFrame
+end
+
+return BlustLib
