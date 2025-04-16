@@ -1,144 +1,101 @@
-local CoreGui = game:GetService("CoreGui")
 local TweenService = game:GetService("TweenService")
+local GuiService = game:GetService("GuiService")
+local CoreGui = game:GetService("CoreGui")
 
-local BlustLib = BlustLib or {}
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 600, 0, 400)
+mainFrame.Position = UDim2.new(0.5, -300, 0.5, -200)
+mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+mainFrame.BackgroundTransparency = 0.8
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = CoreGui
 
-function BlustLib:CreateWindow(options)
-    options = options or {}
-    local windowTitle = options.Title or "Window"
-    local windowName = options.Name or "BlustLibWindow"
+local introFrame = Instance.new("Frame")
+introFrame.Size = UDim2.new(0, 600, 0, 400)
+introFrame.Position = UDim2.new(0.5, -300, 0.5, -200)
+introFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+introFrame.BackgroundTransparency = 1
+introFrame.BorderSizePixel = 0
+introFrame.Parent = CoreGui
 
-    if CoreGui:FindFirstChild(windowName) then
-        CoreGui:FindFirstChild(windowName):Destroy()
-    end
+local introText = Instance.new("TextLabel")
+introText.Size = UDim2.new(1, 0, 1, 0)
+introText.Position = UDim2.new(0, 0, 0, 0)
+introText.BackgroundTransparency = 1
+introText.Text = "Loading..."
+introText.TextSize = 36
+introText.TextColor3 = Color3.fromRGB(255, 255, 255)
+introText.TextStrokeTransparency = 0.8
+introText.TextScaled = true
+introText.Parent = introFrame
 
-    local ScreenGui = Instance.new("ScreenGui")
-    ScreenGui.Name = windowName
-    ScreenGui.ResetOnSpawn = false
-    ScreenGui.Parent = CoreGui
+local introTweenInfo = TweenInfo.new(2, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out)
+local introTweenGoal = {BackgroundTransparency = 0.7}
+local introTween = TweenService:Create(introFrame, introTweenInfo, introTweenGoal)
+introTween:Play()
 
-    local MainFrame = Instance.new("Frame")
-    MainFrame.Name = "MainFrame"
-    MainFrame.Size = UDim2.new(0, 600, 0, 400)
-    MainFrame.Position = UDim2.new(0.5, -300, 0.5, -200)
-    MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-    MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    MainFrame.BorderSizePixel = 0
-    MainFrame.ClipsDescendants = true
-    MainFrame.Parent = ScreenGui
+wait(2) -- Wait for intro animation
 
-    local Shadow = Instance.new("ImageLabel")
-    Shadow.Name = "Shadow"
-    Shadow.Size = UDim2.new(1, 60, 1, 60)
-    Shadow.Position = UDim2.new(0, -30, 0, -30)
-    Shadow.BackgroundTransparency = 1
-    Shadow.Image = "rbxassetid://1316045217"
-    Shadow.ImageTransparency = 0.5
-    Shadow.ScaleType = Enum.ScaleType.Slice
-    Shadow.SliceCenter = Rect.new(10, 10, 118, 118)
-    Shadow.ZIndex = 0
-    Shadow.Parent = MainFrame
+local function createMainWindow()
 
-    -- TopBar
-    local TopBar = Instance.new("Frame")
-    TopBar.Name = "TopBar"
-    TopBar.Size = UDim2.new(1, 0, 0, 35)
-    TopBar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
-    TopBar.BorderSizePixel = 0
-    TopBar.Parent = MainFrame
+    introFrame:Destroy()
 
-    local TitleLabel = Instance.new("TextLabel")
-    TitleLabel.Name = "TitleLabel"
-    TitleLabel.Size = UDim2.new(1, -80, 1, 0)
-    TitleLabel.Position = UDim2.new(0, 10, 0, 0)
-    TitleLabel.BackgroundTransparency = 1
-    TitleLabel.Font = Enum.Font.GothamSemibold
-    TitleLabel.Text = windowTitle
-    TitleLabel.TextSize = 16
-    TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
-    TitleLabel.Parent = TopBar
+    local windowFrame = Instance.new("Frame")
+    windowFrame.Size = UDim2.new(0, 600, 0, 400)
+    windowFrame.Position = UDim2.new(0.5, -300, 0.5, -200)
+    windowFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    windowFrame.BorderSizePixel = 0
+    windowFrame.Parent = CoreGui
 
-    local CloseButton = Instance.new("TextButton")
-    CloseButton.Name = "CloseButton"
-    CloseButton.Size = UDim2.new(0, 35, 0, 35)
-    CloseButton.Position = UDim2.new(1, -35, 0, 0)
-    CloseButton.BackgroundTransparency = 1
-    CloseButton.Text = "X"
-    CloseButton.Font = Enum.Font.Gotham
-    CloseButton.TextSize = 16
-    CloseButton.TextColor3 = Color3.fromRGB(255, 100, 100)
-    CloseButton.Parent = TopBar
+    local closeButton = Instance.new("TextButton")
+    closeButton.Size = UDim2.new(0, 50, 0, 30)
+    closeButton.Position = UDim2.new(1, -55, 0, 5)
+    closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
+    closeButton.Text = "X"
+    closeButton.TextSize = 18
+    closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    closeButton.Parent = windowFrame
 
-    CloseButton.MouseButton1Click:Connect(function()
-        ScreenGui:Destroy()
+    closeButton.MouseButton1Click:Connect(function()
+        windowFrame:Destroy()
     end)
 
-    local MinimizeButton = Instance.new("TextButton")
-    MinimizeButton.Name = "MinimizeButton"
-    MinimizeButton.Size = UDim2.new(0, 35, 0, 35)
-    MinimizeButton.Position = UDim2.new(1, -70, 0, 0)
-    MinimizeButton.BackgroundTransparency = 1
-    MinimizeButton.Text = "–"
-    MinimizeButton.Font = Enum.Font.Gotham
-    MinimizeButton.TextSize = 16
-    MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    MinimizeButton.Parent = TopBar
+    local minimizeButton = Instance.new("TextButton")
+    minimizeButton.Size = UDim2.new(0, 50, 0, 30)
+    minimizeButton.Position = UDim2.new(1, -110, 0, 5)
+    minimizeButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+    minimizeButton.Text = "-"
+    minimizeButton.TextSize = 18
+    minimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    minimizeButton.Parent = windowFrame
 
-    local isMinimized = false
-    MinimizeButton.MouseButton1Click:Connect(function()
-        isMinimized = not isMinimized
-        TweenService:Create(MainFrame, TweenInfo.new(0.25), {
-            Size = isMinimized and UDim2.new(0, 600, 0, 35) or UDim2.new(0, 600, 0, 400)
-        }):Play()
+    minimizeButton.MouseButton1Click:Connect(function()
+        windowFrame.Visible = false
     end)
 
-    local ContentFrame = Instance.new("ScrollingFrame")
-    ContentFrame.Name = "ContentFrame"
-    ContentFrame.Size = UDim2.new(1, 0, 1, -35)
-    ContentFrame.Position = UDim2.new(0, 0, 0, 35)
-    ContentFrame.BackgroundTransparency = 1
-    ContentFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-    ContentFrame.ScrollBarThickness = 6
-    ContentFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
-    ContentFrame.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
-    ContentFrame.Parent = MainFrame
+    local scrollFrame = Instance.new("ScrollingFrame")
+    scrollFrame.Size = UDim2.new(1, 0, 1, -50)
+    scrollFrame.Position = UDim2.new(0, 0, 0, 50)
+    scrollFrame.BackgroundTransparency = 1
+    scrollFrame.ScrollBarThickness = 5
+    scrollFrame.Parent = windowFrame
 
-    local UIListLayout = Instance.new("UIListLayout")
-    UIListLayout.Padding = UDim.new(0, 6)
-    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
-    UIListLayout.Parent = ContentFrame
+    local contentFrame = Instance.new("Frame")
+    contentFrame.Size = UDim2.new(1, 0, 0, 1000) 
+    contentFrame.Parent = scrollFrame
 
-    local dragging, dragInput, dragStart, startPos
-    TopBar.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            dragStart = input.Position
-            startPos = MainFrame.Position
-            input.Changed:Connect(function()
-                if input.UserInputState == Enum.UserInputState.End then
-                    dragging = false
-                end
-            end)
-        end
+    local sampleButton = Instance.new("TextButton")
+    sampleButton.Size = UDim2.new(0, 200, 0, 50)
+    sampleButton.Position = UDim2.new(0, 50, 0, 50)
+    sampleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 255)
+    sampleButton.Text = "Click Me!"
+    sampleButton.TextSize = 18
+    sampleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    sampleButton.Parent = contentFrame
+
+    sampleButton.MouseButton1Click:Connect(function()
+        print("Button Clicked!")
     end)
-
-    TopBar.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement then
-            dragInput = input
-        end
-    end)
-
-    game:GetService("UserInputService").InputChanged:Connect(function(input)
-        if input == dragInput and dragging then
-            local delta = input.Position - dragStart
-            MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-        end
-    end)
-
-    BlustLib._window = MainFrame
-    BlustLib._content = ContentFrame
-    return BlustLib
 end
 
-return BlustLib
+createMainWindow()
