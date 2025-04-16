@@ -1,0 +1,86 @@
+local BlustLib = BlustLib or {}
+
+function BlustLib:CreateSlider(section, options)
+    -- Create slider frame
+    local slider = Instance.new("Frame")
+    slider.Name = options.name or "Slider"
+    slider.Size = UDim2.new(1, -12, 0, 40)
+    slider.BackgroundTransparency = 1
+    slider.Parent = section
+
+    -- Slider label
+    local label = Instance.new("TextLabel")
+    label.Name = "Label"
+    label.Text = options.name or "Slider"
+    label.Size = UDim2.new(1, -40, 0, 20)
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextSize = 14
+    label.Font = Enum.Font.Gotham
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = slider
+
+    -- Create slider bar
+    local sliderBar = Instance.new("Frame")
+    sliderBar.Name = "SliderBar"
+    sliderBar.Size = UDim2.new(1, -40, 0, 10)
+    sliderBar.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    sliderBar.Position = UDim2.new(0, 0, 0, 20)
+    sliderBar.Parent = slider
+
+    local sliderHandle = Instance.new("Frame")
+    sliderHandle.Name = "SliderHandle"
+    sliderHandle.Size = UDim2.new(0, 20, 1, 0)
+    sliderHandle.BackgroundColor3 = Color3.fromRGB(70, 200, 70)
+    sliderHandle.Parent = sliderBar
+
+    -- Initial value
+    local value = options.default or 0
+    local minValue = options.min or 0
+    local maxValue = options.max or 100
+    local step = options.step or 1
+
+    -- Update the slider handle position based on the value
+    local function updateSlider()
+        local handlePosition = (value - minValue) / (maxValue - minValue)
+        sliderHandle.Position = UDim2.new(handlePosition, -10, 0, 0)
+    end
+
+    updateSlider()
+
+    -- Update value when the user clicks and drags the handle
+    local dragging = false
+    sliderHandle.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+        end
+    end)
+
+    sliderHandle.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+
+    -- Handle dragging to update the value
+    sliderBar.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local mouseX = input.Position.X
+            local sliderWidth = sliderBar.AbsoluteSize.X
+            local newValue = math.clamp((mouseX / sliderWidth) * (maxValue - minValue) + minValue, minValue, maxValue)
+            newValue = math.round(newValue / step) * step
+            if newValue ~= value then
+                value = newValue
+                updateSlider()
+                -- Call the callback with the updated value
+                if options.callback and typeof(options.callback) == "function" then
+                    options.callback(value)
+                end
+            end
+        end
+    end)
+
+    return slider
+end
+
+return BlustLib
