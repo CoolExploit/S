@@ -1,9 +1,9 @@
 local Players = game:GetService("Players")
 local UserInputService = game:GetService("UserInputService")
 
-local BlustLib = BlustLib or {}
+local Window = {}
 
-function BlustLib:CreateWindow(options)
+function Window:CreateWindow(options)
     local windowName = options.name or "BlustHub"
     local windowSize = options.size or UDim2.new(0, 500, 0, 350)
     local windowPosition = options.position or UDim2.new(0.5, -250, 0.5, -175)
@@ -53,7 +53,6 @@ function BlustLib:CreateWindow(options)
     contentHolder.BackgroundTransparency = 1
     contentHolder.Parent = mainFrame
 
-    -- Dragging Logic (only via title bar)
     local dragging = false
     local dragStart, startPos
 
@@ -91,4 +90,4 @@ function BlustLib:CreateWindow(options)
     }
 end
 
-return BlustLib
+return Window
