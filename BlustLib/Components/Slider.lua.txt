@@ -1,14 +1,12 @@
 local BlustLib = BlustLib or {}
 
 function BlustLib:CreateSlider(section, options)
-    -- Create slider frame
     local slider = Instance.new("Frame")
     slider.Name = options.name or "Slider"
     slider.Size = UDim2.new(1, -12, 0, 40)
     slider.BackgroundTransparency = 1
     slider.Parent = section
 
-    -- Slider label
     local label = Instance.new("TextLabel")
     label.Name = "Label"
     label.Text = options.name or "Slider"
@@ -20,7 +18,6 @@ function BlustLib:CreateSlider(section, options)
     label.TextXAlignment = Enum.TextXAlignment.Left
     label.Parent = slider
 
-    -- Create slider bar
     local sliderBar = Instance.new("Frame")
     sliderBar.Name = "SliderBar"
     sliderBar.Size = UDim2.new(1, -40, 0, 10)
@@ -34,13 +31,11 @@ function BlustLib:CreateSlider(section, options)
     sliderHandle.BackgroundColor3 = Color3.fromRGB(70, 200, 70)
     sliderHandle.Parent = sliderBar
 
-    -- Initial value
     local value = options.default or 0
     local minValue = options.min or 0
     local maxValue = options.max or 100
     local step = options.step or 1
 
-    -- Update the slider handle position based on the value
     local function updateSlider()
         local handlePosition = (value - minValue) / (maxValue - minValue)
         sliderHandle.Position = UDim2.new(handlePosition, -10, 0, 0)
@@ -48,7 +43,6 @@ function BlustLib:CreateSlider(section, options)
 
     updateSlider()
 
-    -- Update value when the user clicks and drags the handle
     local dragging = false
     sliderHandle.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
@@ -62,7 +56,6 @@ function BlustLib:CreateSlider(section, options)
         end
     end)
 
-    -- Handle dragging to update the value
     sliderBar.InputChanged:Connect(function(input)
         if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
             local mouseX = input.Position.X
