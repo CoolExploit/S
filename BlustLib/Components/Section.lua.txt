@@ -1,0 +1,41 @@
+local BlustLib = BlustLib or {}
+
+function BlustLib:CreateSection(tabFrame, sectionName)
+    -- Create the section container
+    local section = Instance.new("Frame")
+    section.Name = sectionName or "Section"
+    section.Size = UDim2.new(1, 0, 0, 0)
+    section.BackgroundTransparency = 1
+    section.Parent = tabFrame
+
+    local sectionTitle = Instance.new("TextLabel")
+    sectionTitle.Name = "SectionTitle"
+    sectionTitle.Text = sectionName or "Section"
+    sectionTitle.Size = UDim2.new(1, 0, 0, 24)
+    sectionTitle.BackgroundTransparency = 1
+    sectionTitle.TextColor3 = Color3.fromRGB(200, 200, 200)
+    sectionTitle.TextSize = 14
+    sectionTitle.Font = Enum.Font.GothamBold
+    sectionTitle.TextXAlignment = Enum.TextXAlignment.Left
+    sectionTitle.Parent = section
+
+    local padding = Instance.new("UIPadding")
+    padding.PaddingLeft = UDim.new(0, 6)
+    padding.Parent = sectionTitle
+
+    local contentFrame = Instance.new("Frame")
+    contentFrame.Name = "Content"
+    contentFrame.Size = UDim2.new(1, 0, 0, 0) -- Height will be dynamic
+    contentFrame.Position = UDim2.new(0, 0, 0, 24)
+    contentFrame.BackgroundTransparency = 1
+    contentFrame.Parent = section
+
+    local layout = Instance.new("UIListLayout")
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.Padding = UDim.new(0, 6)
+    layout.Parent = contentFrame
+
+    return contentFrame
+end
+
+return BlustLib
