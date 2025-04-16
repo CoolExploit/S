@@ -21,11 +21,16 @@ local moduleURLs = {
 }
 
 for _, url in ipairs(moduleURLs) do
-    local success, result = pcall(function()
+    local success, moduleResult = pcall(function()
         return loadstring(game:HttpGet(url))()
     end)
-    if not success then
-        warn("Failed to load module: " .. url .. "\nError: " .. tostring(result))
+    if success and type(moduleResult) == "table" then
+        for k, v in pairs(moduleResult) do
+            BlustLib[k] = v
+        end
+    else
+        warn("Failed to load module: " .. url .. "\nError: " .. tostring(moduleResult))
     end
 end
+
 return BlustLib
