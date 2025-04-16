@@ -1,31 +1,25 @@
--- BlustLib Init.lua
-
 local BlustLib = {}
 
--- List of module URLs (raw links from your GitHub repo)
 local moduleURLs = {
-    -- Core
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Core/Window.lua",
 
-    -- Components
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Tab.lua",
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Section.lua",
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Button.lua",
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Toggle.lua",
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Slider.lua",
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/ColorPicker.lua",
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Label.lua",
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Paragraph.lua",
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Input.lua",
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Keybind.lua",
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Dropdown.lua",
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/ToggleUI.lua",
+    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Core/Window.lua.txt",
 
-    -- Utils
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Utils/Notify.lua"
+    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Tab.lua.txt",
+    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Section.lua.txt",
+    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Button.lua.txt",
+    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Toggle.lua.txt",
+    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Slider.lua.txt",
+    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/ColorPicker.lua.txt",
+    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Label.lua.txt",
+    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Paragraph.lua.txt",
+    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Input.lua.txt",
+    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Keybind.lua.txt",
+    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Dropdown.lua.txt",
+    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/ToggleUI.lua.txt",
+
+    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Utils/Notify.lua.txt"
 }
 
--- Load each module using loadstring
 for _, url in ipairs(moduleURLs) do
     local success, result = pcall(function()
         return loadstring(game:HttpGet(url))()
@@ -34,6 +28,4 @@ for _, url in ipairs(moduleURLs) do
         warn("Failed to load module: " .. url .. "\nError: " .. tostring(result))
     end
 end
-
--- Return the full library
 return BlustLib
