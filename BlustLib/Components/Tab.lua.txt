@@ -1,7 +1,6 @@
 local BlustLib = BlustLib or {}
 
 function BlustLib:CreateTab(window, name)
-    -- Container for tabs if it doesn't exist
     local tabContainer = window.Main:FindFirstChild("TabContainer")
     if not tabContainer then
         tabContainer = Instance.new("Frame")
@@ -19,7 +18,6 @@ function BlustLib:CreateTab(window, name)
         tabLayout.Parent = tabContainer
     end
 
-    -- Button to switch tabs
     local tabButton = Instance.new("TextButton")
     tabButton.Name = name .. "Tab"
     tabButton.Text = name
@@ -35,7 +33,6 @@ function BlustLib:CreateTab(window, name)
     tabCorner.CornerRadius = UDim.new(0, 6)
     tabCorner.Parent = tabButton
 
-    -- Actual tab content area
     local tabContent = Instance.new("Frame")
     tabContent.Name = name .. "Content"
     tabContent.Size = UDim2.new(1, 0, 1, -85)
@@ -49,7 +46,6 @@ function BlustLib:CreateTab(window, name)
     layout.Padding = UDim.new(0, 10)
     layout.Parent = tabContent
 
-    -- Tab switching logic
     tabButton.MouseButton1Click:Connect(function()
         for _, tab in ipairs(window.Main:GetChildren()) do
             if tab:IsA("Frame") and tab.Name:find("Content") then
@@ -59,8 +55,7 @@ function BlustLib:CreateTab(window, name)
         tabContent.Visible = true
     end)
 
-    -- Auto-show first tab
-    if #tabContainer:GetChildren() == 2 then -- includes layout
+    if #tabContainer:GetChildren() == 2 then
         tabContent.Visible = true
     end
 
