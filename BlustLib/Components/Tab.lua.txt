@@ -1,0 +1,70 @@
+local BlustLib = BlustLib or {}
+
+function BlustLib:CreateTab(window, name)
+    -- Container for tabs if it doesn't exist
+    local tabContainer = window.Main:FindFirstChild("TabContainer")
+    if not tabContainer then
+        tabContainer = Instance.new("Frame")
+        tabContainer.Name = "TabContainer"
+        tabContainer.Size = UDim2.new(1, 0, 0, 35)
+        tabContainer.Position = UDim2.new(0, 0, 0, 40)
+        tabContainer.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+        tabContainer.BorderSizePixel = 0
+        tabContainer.Parent = window.Main
+
+        local tabLayout = Instance.new("UIListLayout")
+        tabLayout.FillDirection = Enum.FillDirection.Horizontal
+        tabLayout.SortOrder = Enum.SortOrder.LayoutOrder
+        tabLayout.Padding = UDim.new(0, 5)
+        tabLayout.Parent = tabContainer
+    end
+
+    -- Button to switch tabs
+    local tabButton = Instance.new("TextButton")
+    tabButton.Name = name .. "Tab"
+    tabButton.Text = name
+    tabButton.Size = UDim2.new(0, 100, 1, 0)
+    tabButton.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    tabButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    tabButton.TextSize = 14
+    tabButton.Font = Enum.Font.Gotham
+    tabButton.AutoButtonColor = true
+    tabButton.Parent = tabContainer
+
+    local tabCorner = Instance.new("UICorner")
+    tabCorner.CornerRadius = UDim.new(0, 6)
+    tabCorner.Parent = tabButton
+
+    -- Actual tab content area
+    local tabContent = Instance.new("Frame")
+    tabContent.Name = name .. "Content"
+    tabContent.Size = UDim2.new(1, 0, 1, -85)
+    tabContent.Position = UDim2.new(0, 0, 0, 85)
+    tabContent.BackgroundTransparency = 1
+    tabContent.Visible = false
+    tabContent.Parent = window.Main
+
+    local layout = Instance.new("UIListLayout")
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+    layout.Padding = UDim.new(0, 10)
+    layout.Parent = tabContent
+
+    -- Tab switching logic
+    tabButton.MouseButton1Click:Connect(function()
+        for _, tab in ipairs(window.Main:GetChildren()) do
+            if tab:IsA("Frame") and tab.Name:find("Content") then
+                tab.Visible = false
+            end
+        end
+        tabContent.Visible = true
+    end)
+
+    -- Auto-show first tab
+    if #tabContainer:GetChildren() == 2 then -- includes layout
+        tabContent.Visible = true
+    end
+
+    return tabContent
+end
+
+return BlustLib
