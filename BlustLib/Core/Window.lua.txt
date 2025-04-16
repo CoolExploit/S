@@ -1,93 +1,144 @@
-local Players = game:GetService("Players")
-local UserInputService = game:GetService("UserInputService")
+local CoreGui = game:GetService("CoreGui")
+local TweenService = game:GetService("TweenService")
 
-local Window = {}
+local BlustLib = BlustLib or {}
 
-function Window:CreateWindow(options)
-    local windowName = options.name or "BlustHub"
-    local windowSize = options.size or UDim2.new(0, 500, 0, 350)
-    local windowPosition = options.position or UDim2.new(0.5, -250, 0.5, -175)
-    local backgroundColor = options.color or Color3.fromRGB(30, 30, 30)
+function BlustLib:CreateWindow(options)
+    options = options or {}
+    local windowTitle = options.Title or "Window"
+    local windowName = options.Name or "BlustLibWindow"
 
-    local gui = Instance.new("ScreenGui")
-    gui.Name = windowName
-    gui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
-    gui.ResetOnSpawn = false
-    gui.Parent = Players.LocalPlayer:WaitForChild("PlayerGui")
+    if CoreGui:FindFirstChild(windowName) then
+        CoreGui:FindFirstChild(windowName):Destroy()
+    end
 
-    local mainFrame = Instance.new("Frame")
-    mainFrame.Name = "MainFrame"
-    mainFrame.Size = windowSize
-    mainFrame.Position = windowPosition
-    mainFrame.BackgroundColor3 = backgroundColor
-    mainFrame.BorderSizePixel = 0
-    mainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
-    mainFrame.Parent = gui
+    local ScreenGui = Instance.new("ScreenGui")
+    ScreenGui.Name = windowName
+    ScreenGui.ResetOnSpawn = false
+    ScreenGui.Parent = CoreGui
 
-    local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 12)
-    corner.Parent = mainFrame
+    local MainFrame = Instance.new("Frame")
+    MainFrame.Name = "MainFrame"
+    MainFrame.Size = UDim2.new(0, 600, 0, 400)
+    MainFrame.Position = UDim2.new(0.5, -300, 0.5, -200)
+    MainFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+    MainFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    MainFrame.BorderSizePixel = 0
+    MainFrame.ClipsDescendants = true
+    MainFrame.Parent = ScreenGui
 
-    local title = Instance.new("TextLabel")
-    title.Name = "Title"
-    title.Text = windowName
-    title.Size = UDim2.new(1, 0, 0, 40)
-    title.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-    title.TextColor3 = Color3.fromRGB(255, 255, 255)
-    title.TextSize = 18
-    title.Font = Enum.Font.GothamBold
-    title.Parent = mainFrame
+    local Shadow = Instance.new("ImageLabel")
+    Shadow.Name = "Shadow"
+    Shadow.Size = UDim2.new(1, 60, 1, 60)
+    Shadow.Position = UDim2.new(0, -30, 0, -30)
+    Shadow.BackgroundTransparency = 1
+    Shadow.Image = "rbxassetid://1316045217"
+    Shadow.ImageTransparency = 0.5
+    Shadow.ScaleType = Enum.ScaleType.Slice
+    Shadow.SliceCenter = Rect.new(10, 10, 118, 118)
+    Shadow.ZIndex = 0
+    Shadow.Parent = MainFrame
 
-    local titleCorner = Instance.new("UICorner")
-    titleCorner.CornerRadius = UDim.new(0, 12)
-    titleCorner.Parent = title
+    -- TopBar
+    local TopBar = Instance.new("Frame")
+    TopBar.Name = "TopBar"
+    TopBar.Size = UDim2.new(1, 0, 0, 35)
+    TopBar.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    TopBar.BorderSizePixel = 0
+    TopBar.Parent = MainFrame
 
-    local padding = Instance.new("UIPadding")
-    padding.PaddingLeft = UDim.new(0, 10)
-    padding.Parent = title
+    local TitleLabel = Instance.new("TextLabel")
+    TitleLabel.Name = "TitleLabel"
+    TitleLabel.Size = UDim2.new(1, -80, 1, 0)
+    TitleLabel.Position = UDim2.new(0, 10, 0, 0)
+    TitleLabel.BackgroundTransparency = 1
+    TitleLabel.Font = Enum.Font.GothamSemibold
+    TitleLabel.Text = windowTitle
+    TitleLabel.TextSize = 16
+    TitleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    TitleLabel.Parent = TopBar
 
-    local contentHolder = Instance.new("Frame")
-    contentHolder.Name = "ContentHolder"
-    contentHolder.Size = UDim2.new(1, -20, 1, -60)
-    contentHolder.Position = UDim2.new(0, 10, 0, 50)
-    contentHolder.BackgroundTransparency = 1
-    contentHolder.Parent = mainFrame
+    local CloseButton = Instance.new("TextButton")
+    CloseButton.Name = "CloseButton"
+    CloseButton.Size = UDim2.new(0, 35, 0, 35)
+    CloseButton.Position = UDim2.new(1, -35, 0, 0)
+    CloseButton.BackgroundTransparency = 1
+    CloseButton.Text = "X"
+    CloseButton.Font = Enum.Font.Gotham
+    CloseButton.TextSize = 16
+    CloseButton.TextColor3 = Color3.fromRGB(255, 100, 100)
+    CloseButton.Parent = TopBar
 
-    local dragging = false
-    local dragStart, startPos
+    CloseButton.MouseButton1Click:Connect(function()
+        ScreenGui:Destroy()
+    end)
 
-    title.InputBegan:Connect(function(input)
+    local MinimizeButton = Instance.new("TextButton")
+    MinimizeButton.Name = "MinimizeButton"
+    MinimizeButton.Size = UDim2.new(0, 35, 0, 35)
+    MinimizeButton.Position = UDim2.new(1, -70, 0, 0)
+    MinimizeButton.BackgroundTransparency = 1
+    MinimizeButton.Text = "–"
+    MinimizeButton.Font = Enum.Font.Gotham
+    MinimizeButton.TextSize = 16
+    MinimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    MinimizeButton.Parent = TopBar
+
+    local isMinimized = false
+    MinimizeButton.MouseButton1Click:Connect(function()
+        isMinimized = not isMinimized
+        TweenService:Create(MainFrame, TweenInfo.new(0.25), {
+            Size = isMinimized and UDim2.new(0, 600, 0, 35) or UDim2.new(0, 600, 0, 400)
+        }):Play()
+    end)
+
+    local ContentFrame = Instance.new("ScrollingFrame")
+    ContentFrame.Name = "ContentFrame"
+    ContentFrame.Size = UDim2.new(1, 0, 1, -35)
+    ContentFrame.Position = UDim2.new(0, 0, 0, 35)
+    ContentFrame.BackgroundTransparency = 1
+    ContentFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
+    ContentFrame.ScrollBarThickness = 6
+    ContentFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    ContentFrame.VerticalScrollBarInset = Enum.ScrollBarInset.ScrollBar
+    ContentFrame.Parent = MainFrame
+
+    local UIListLayout = Instance.new("UIListLayout")
+    UIListLayout.Padding = UDim.new(0, 6)
+    UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+    UIListLayout.Parent = ContentFrame
+
+    local dragging, dragInput, dragStart, startPos
+    TopBar.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = true
             dragStart = input.Position
-            startPos = mainFrame.Position
+            startPos = MainFrame.Position
+            input.Changed:Connect(function()
+                if input.UserInputState == Enum.UserInputState.End then
+                    dragging = false
+                end
+            end)
         end
     end)
 
-    UserInputService.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+    TopBar.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement then
+            dragInput = input
+        end
+    end)
+
+    game:GetService("UserInputService").InputChanged:Connect(function(input)
+        if input == dragInput and dragging then
             local delta = input.Position - dragStart
-            mainFrame.Position = UDim2.new(
-                startPos.X.Scale,
-                startPos.X.Offset + delta.X,
-                startPos.Y.Scale,
-                startPos.Y.Offset + delta.Y
-            )
+            MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
         end
     end)
 
-    UserInputService.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
-        end
-    end)
-
-    return {
-        GUI = gui,
-        Main = mainFrame,
-        Content = contentHolder,
-        Title = title
-    }
+    BlustLib._window = MainFrame
+    BlustLib._content = ContentFrame
+    return BlustLib
 end
 
-return Window
+return BlustLib
