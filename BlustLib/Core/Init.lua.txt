@@ -1,39 +1,78 @@
 local BlustLib = {}
+local modules = {}
 
-local moduleURLs = {
-
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Core/Window.lua.txt",
-
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Tab.lua.txt",
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Section.lua.txt",
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Button.lua.txt",
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Toggle.lua.txt",
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Slider.lua.txt",
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/ColorPicker.lua.txt",
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Label.lua.txt",
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Paragraph.lua.txt",
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Input.lua.txt",
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Keybind.lua.txt",
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Dropdown.lua.txt",
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/ToggleUI.lua.txt",
-
-    "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Utils/Notify.lua.txt"
+-- List of module URLs and their assigned keys
+local moduleList = {
+    Window       = "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Core/Window.lua.txt",
+    Tab          = "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Tab.lua.txt",
+    Section      = "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Section.lua.txt",
+    Button       = "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Button.lua.txt",
+    Toggle       = "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Toggle.lua.txt",
+    Slider       = "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Slider.lua.txt",
+    ColorPicker  = "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/ColorPicker.lua.txt",
+    Label        = "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Label.lua.txt",
+    Paragraph    = "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Paragraph.lua.txt",
+    Input        = "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Input.lua.txt",
+    Keybind      = "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Keybind.lua.txt",
+    Dropdown     = "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/Dropdown.lua.txt",
+    ToggleUI     = "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Components/ToggleUI.lua.txt",
+    Notify       = "https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Utils/Notify.lua.txt"
 }
 
-for _, url in ipairs(moduleURLs) do
+-- Load each module and store in the `modules` table
+for name, url in pairs(moduleList) do
     local success, result = pcall(function()
         return loadstring(game:HttpGet(url))()
     end)
-    if not success then
-        warn("Failed to load module: " .. url .. "\nError: " .. tostring(result))
+    if success and result then
+        modules[name] = result
+    else
+        warn("Failed to load module: " .. name .. "\nError: " .. tostring(result))
     end
 end
 
-local Window = BlustLib:CreateWindow({
-    Name = "Executor UI",
-    Title = "Main Window",
-    Size = UDim2.new(0, 600, 0, 400),
-    Position = UDim2.new(0.5, -300, 0.5, -200)
-})
+-- Assign expected functions from modules to BlustLib
+if modules.Window and modules.Window.CreateWindow then
+    BlustLib.CreateWindow = modules.Window.CreateWindow
+end
+if modules.Tab then
+    BlustLib.CreateTab = modules.Tab
+end
+if modules.Section then
+    BlustLib.CreateSection = modules.Section
+end
+if modules.Button then
+    BlustLib.CreateButton = modules.Button
+end
+if modules.Toggle then
+    BlustLib.CreateToggle = modules.Toggle
+end
+if modules.Slider then
+    BlustLib.CreateSlider = modules.Slider
+end
+if modules.ColorPicker then
+    BlustLib.CreateColorPicker = modules.ColorPicker
+end
+if modules.Label then
+    BlustLib.CreateLabel = modules.Label
+end
+if modules.Paragraph then
+    BlustLib.CreateParagraph = modules.Paragraph
+end
+if modules.Input then
+    BlustLib.CreateInput = modules.Input
+end
+if modules.Keybind then
+    BlustLib.CreateKeybind = modules.Keybind
+end
+if modules.Dropdown then
+    BlustLib.CreateDropdown = modules.Dropdown
+end
+if modules.ToggleUI then
+    BlustLib.ToggleUI = modules.ToggleUI
+end
+if modules.Notify and modules.Notify.Notify then
+    BlustLib.Notify = modules.Notify.Notify
+end
 
 return BlustLib
