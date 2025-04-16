@@ -1,13 +1,11 @@
 BlustLib Documentation
 BlustLib is a custom, user-friendly UI library designed for Roblox exploit scripts. It allows you to easily create dynamic and customizable UIs for your scripts, and you can load it directly via loadstring() in your executor.
 
-Installation
+# Installation
 To use BlustLib, load it directly into your executor script using the following code:
 
-lua
-Copy
-Edit
-local BlustLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Init.lua.txt"))()
+'''lua
+local BlustLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Init.lua.txt"))()'''
 This code loads the BlustLib module into your executor, and you're ready to begin creating UIs.
 
 Core Functions
