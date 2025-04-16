@@ -1,51 +1,25 @@
 local TweenService = game:GetService("TweenService")
-local GuiService = game:GetService("GuiService")
-local CoreGui = game:GetService("CoreGui")
+local player = game.Players.LocalPlayer
+local mouse = player:GetMouse()
 
-local mainFrame = Instance.new("Frame")
-mainFrame.Size = UDim2.new(0, 600, 0, 400)
-mainFrame.Position = UDim2.new(0.5, -300, 0.5, -200)
-mainFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-mainFrame.BackgroundTransparency = 0.8
-mainFrame.BorderSizePixel = 0
-mainFrame.Parent = CoreGui
+local BlustLib = {}
 
-local introFrame = Instance.new("Frame")
-introFrame.Size = UDim2.new(0, 600, 0, 400)
-introFrame.Position = UDim2.new(0.5, -300, 0.5, -200)
-introFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-introFrame.BackgroundTransparency = 1
-introFrame.BorderSizePixel = 0
-introFrame.Parent = CoreGui
-
-local introText = Instance.new("TextLabel")
-introText.Size = UDim2.new(1, 0, 1, 0)
-introText.Position = UDim2.new(0, 0, 0, 0)
-introText.BackgroundTransparency = 1
-introText.Text = "Loading..."
-introText.TextSize = 36
-introText.TextColor3 = Color3.fromRGB(255, 255, 255)
-introText.TextStrokeTransparency = 0.8
-introText.TextScaled = true
-introText.Parent = introFrame
-
-local introTweenInfo = TweenInfo.new(2, Enum.EasingStyle.Bounce, Enum.EasingDirection.Out)
-local introTweenGoal = {BackgroundTransparency = 0.7}
-local introTween = TweenService:Create(introFrame, introTweenInfo, introTweenGoal)
-introTween:Play()
-
-wait(2) -- Wait for intro animation
-
-local function createMainWindow()
-
-    introFrame:Destroy()
-
+function BlustLib:CreateWindow(options)
     local windowFrame = Instance.new("Frame")
-    windowFrame.Size = UDim2.new(0, 600, 0, 400)
-    windowFrame.Position = UDim2.new(0.5, -300, 0.5, -200)
-    windowFrame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-    windowFrame.BorderSizePixel = 0
-    windowFrame.Parent = CoreGui
+    windowFrame.Size = options.Size or UDim2.new(0, 600, 0, 400)
+    windowFrame.Position = options.Position or UDim2.new(0.5, -300, 0.5, -200)
+    windowFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    windowFrame.BackgroundTransparency = 0.1
+    windowFrame.Parent = game.CoreGui
+
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Size = UDim2.new(1, 0, 0, 30)
+    titleLabel.Position = UDim2.new(0, 0, 0, 0)
+    titleLabel.Text = options.Title or "Window Title"
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.TextSize = 20
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.Parent = windowFrame
 
     local closeButton = Instance.new("TextButton")
     closeButton.Size = UDim2.new(0, 50, 0, 30)
@@ -55,7 +29,6 @@ local function createMainWindow()
     closeButton.TextSize = 18
     closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     closeButton.Parent = windowFrame
-
     closeButton.MouseButton1Click:Connect(function()
         windowFrame:Destroy()
     end)
@@ -68,34 +41,70 @@ local function createMainWindow()
     minimizeButton.TextSize = 18
     minimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     minimizeButton.Parent = windowFrame
-
     minimizeButton.MouseButton1Click:Connect(function()
-        windowFrame.Visible = false
+        windowFrame.Visible = not windowFrame.Visible
     end)
 
-    local scrollFrame = Instance.new("ScrollingFrame")
-    scrollFrame.Size = UDim2.new(1, 0, 1, -50)
-    scrollFrame.Position = UDim2.new(0, 0, 0, 50)
-    scrollFrame.BackgroundTransparency = 1
-    scrollFrame.ScrollBarThickness = 5
-    scrollFrame.Parent = windowFrame
+    local dragging = false
+    local dragInput, mousePos, framePos
 
-    local contentFrame = Instance.new("Frame")
-    contentFrame.Size = UDim2.new(1, 0, 0, 1000) 
-    contentFrame.Parent = scrollFrame
+    titleLabel.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = true
+            mousePos = input.Position
+            framePos = windowFrame.Position
+        end
+    end)
 
-    local sampleButton = Instance.new("TextButton")
-    sampleButton.Size = UDim2.new(0, 200, 0, 50)
-    sampleButton.Position = UDim2.new(0, 50, 0, 50)
-    sampleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 255)
-    sampleButton.Text = "Click Me!"
-    sampleButton.TextSize = 18
-    sampleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    sampleButton.Parent = contentFrame
+    titleLabel.InputChanged:Connect(function(input)
+        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+            local delta = input.Position - mousePos
+            windowFrame.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
+        end
+    end)
 
-    sampleButton.MouseButton1Click:Connect(function()
-        print("Button Clicked!")
+    titleLabel.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragging = false
+        end
+    end)
+    return windowFrame
+end
+
+local function createIntro()
+    local introFrame = Instance.new("Frame")
+    introFrame.Size = UDim2.new(1, 0, 1, 0)
+    introFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    introFrame.Position = UDim2.new(0, 0, 0, 0)
+    introFrame.Parent = game.CoreGui
+
+    local introLabel = Instance.new("TextLabel")
+    introLabel.Size = UDim2.new(1, 0, 1, 0)
+    introLabel.Text = "Loading..."
+    introLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    introLabel.TextSize = 30
+    introLabel.BackgroundTransparency = 1
+    introLabel.Parent = introFrame
+
+    local introTween = TweenService:Create(introFrame, TweenInfo.new(2, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Size = UDim2.new(0, 0, 0, 0)})
+    introTween:Play()
+
+    introTween.Completed:Connect(function()
+        introFrame:Destroy()
     end)
 end
 
-createMainWindow()
+local function loadUI()
+    createIntro()
+
+    wait(2)
+
+    local Window = BlustLib:CreateWindow({
+        Name = "Executor UI",
+        Title = "Main Window",
+        Size = UDim2.new(0, 600, 0, 400),
+        Position = UDim2.new(0.5, -300, 0.5, -200)
+    })
+end
+
+loadUI()
