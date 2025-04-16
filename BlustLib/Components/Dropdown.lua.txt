@@ -1,0 +1,74 @@
+local BlustLib = BlustLib or {}
+
+function BlustLib:CreateDropdown(section, options)
+    local dropdownContainer = Instance.new("Frame")
+    dropdownContainer.Name = "DropdownContainer"
+    dropdownContainer.Size = UDim2.new(1, -12, 0, 40)
+    dropdownContainer.BackgroundTransparency = 1
+    dropdownContainer.Parent = section
+
+    local label = Instance.new("TextLabel")
+    label.Name = "Label"
+    label.Text = options.label or "Dropdown"
+    label.Size = UDim2.new(1, 0, 0, 20)
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextSize = 14
+    label.Font = Enum.Font.Gotham
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = dropdownContainer
+
+    local dropdownButton = Instance.new("TextButton")
+    dropdownButton.Name = "DropdownButton"
+    dropdownButton.Text = "Select an option"
+    dropdownButton.Size = UDim2.new(1, 0, 0, 30)
+    dropdownButton.Position = UDim2.new(0, 0, 0, 20)
+    dropdownButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    dropdownButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+    dropdownButton.TextSize = 14
+    dropdownButton.Font = Enum.Font.Gotham
+    dropdownButton.Parent = dropdownContainer
+
+    local dropdownList = Instance.new("Frame")
+    dropdownList.Name = "DropdownList"
+    dropdownList.Size = UDim2.new(1, 0, 0, 0)
+    dropdownList.BackgroundTransparency = 1
+    dropdownList.Position = UDim2.new(0, 0, 1, 0)
+    dropdownList.Parent = dropdownContainer
+
+    local function updateDropdownText(text)
+        dropdownButton.Text = text
+        dropdownList:TweenSize(UDim2.new(1, 0, 0, 0), "Out", "Quad", 0.3, true)
+    end
+
+    dropdownButton.MouseButton1Click:Connect(function()
+        if dropdownList.Size.Y.Scale == 0 then
+            dropdownList:TweenSize(UDim2.new(1, 0, 0, #options.items * 30), "Out", "Quad", 0.3, true)
+        else
+            dropdownList:TweenSize(UDim2.new(1, 0, 0, 0), "Out", "Quad", 0.3, true)
+        end
+    end)
+
+    for _, item in ipairs(options.items) do
+        local optionButton = Instance.new("TextButton")
+        optionButton.Name = item
+        optionButton.Text = item
+        optionButton.Size = UDim2.new(1, 0, 0, 30)
+        optionButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+        optionButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        optionButton.TextSize = 14
+        optionButton.Font = Enum.Font.Gotham
+        optionButton.Parent = dropdownList
+
+        optionButton.MouseButton1Click:Connect(function()
+            updateDropdownText(item)
+            if options.callback and typeof(options.callback) == "function" then
+                options.callback(item)
+            end
+        end)
+    end
+
+    return dropdownContainer
+end
+
+return BlustLib
