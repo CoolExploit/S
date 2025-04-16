@@ -1,0 +1,38 @@
+local BlustLib = {}
+
+function BlustLib:Notify(title, message, duration, type)
+    local notification = Instance.new("ScreenGui")
+    notification.Name = "Notification"
+    notification.Parent = game.Players.LocalPlayer.PlayerGui
+    notification.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+    local frame = Instance.new("Frame")
+    frame.Parent = notification
+    frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+    frame.Position = UDim2.new(0.5, -200, 0, 0)
+    frame.Size = UDim2.new(0, 400, 0, 100)
+
+    local titleLabel = Instance.new("TextLabel")
+    titleLabel.Parent = frame
+    titleLabel.BackgroundTransparency = 1
+    titleLabel.Size = UDim2.new(1, 0, 0, 30)
+    titleLabel.Font = Enum.Font.GothamBold
+    titleLabel.Text = title
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    titleLabel.TextSize = 18
+
+    local messageLabel = Instance.new("TextLabel")
+    messageLabel.Parent = frame
+    messageLabel.BackgroundTransparency = 1
+    messageLabel.Size = UDim2.new(1, 0, 0, 70)
+    messageLabel.Position = UDim2.new(0, 0, 0.3, 0)
+    messageLabel.Font = Enum.Font.Gotham
+    messageLabel.Text = message
+    messageLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+    messageLabel.TextSize = 14
+
+    wait(duration)
+    notification:Destroy()
+end
+
+return BlustLib
