@@ -1,0 +1,69 @@
+local BlustLib = BlustLib or {}
+
+function BlustLib:CreateToggle(section, options)
+    local toggle = Instance.new("Frame")
+    toggle.Name = options.name or "Toggle"
+    toggle.Size = UDim2.new(1, -12, 0, 30)
+    toggle.BackgroundTransparency = 1
+    toggle.Parent = section
+
+
+    local label = Instance.new("TextLabel")
+    label.Name = "Label"
+    label.Text = options.name or "Toggle"
+    label.Size = UDim2.new(1, -40, 0, 30)
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextSize = 14
+    label.Font = Enum.Font.Gotham
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = toggle
+
+
+    local button = Instance.new("TextButton")
+    button.Name = "ToggleButton"
+    button.Size = UDim2.new(0, 30, 1, 0)
+    button.Position = UDim2.new(1, -40, 0, 0)
+    button.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.Text = ""
+    button.Parent = toggle
+
+ 
+    local isToggled = options.default or false
+    local buttonCorner = Instance.new("UICorner")
+    buttonCorner.CornerRadius = UDim.new(0, 6)
+    buttonCorner.Parent = button
+
+    local buttonStroke = Instance.new("UIStroke")
+    buttonStroke.Color = Color3.fromRGB(50, 50, 50)
+    buttonStroke.Thickness = 1
+    buttonStroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+    buttonStroke.Parent = button
+
+    -- Update visual state of toggle
+    local function updateToggle()
+        if isToggled then
+            button.BackgroundColor3 = Color3.fromRGB(70, 200, 70)  -- Green for ON
+        else
+            button.BackgroundColor3 = Color3.fromRGB(200, 70, 70)  -- Red for OFF
+        end
+    end
+
+    updateToggle()
+
+    
+    button.MouseButton1Click:Connect(function()
+        isToggled = not isToggled
+        updateToggle()
+
+       
+        if options.callback and typeof(options.callback) == "function" then
+            options.callback(isToggled)
+        end
+    end)
+
+    return toggle
+end
+
+return BlustLib
