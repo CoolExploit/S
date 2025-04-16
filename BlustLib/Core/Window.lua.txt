@@ -1,110 +1,108 @@
 local TweenService = game:GetService("TweenService")
-local player = game.Players.LocalPlayer
-local mouse = player:GetMouse()
+local Window = {}
 
-local BlustLib = {}
-
-function BlustLib:CreateWindow(options)
+-- Function to create the window
+function Window:CreateWindow(options)
+    local Name = options.Name or "Window"
+    local Title = options.Title or "Untitled"
+    local Size = options.Size or UDim2.new(0, 600, 0, 400)
+    local Position = options.Position or UDim2.new(0.5, -300, 0.5, -200)
+    local Draggable = options.Draggable or true
+    local Minimize = options.Minimize or true
+    local CloseButton = options.CloseButton or true
+    local Smooth = options.Smooth or false
+    
+    -- Create the main window frame
     local windowFrame = Instance.new("Frame")
-    windowFrame.Size = options.Size or UDim2.new(0, 600, 0, 400)
-    windowFrame.Position = options.Position or UDim2.new(0.5, -300, 0.5, -200)
-    windowFrame.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-    windowFrame.BackgroundTransparency = 0.1
+    windowFrame.Name = Name
+    windowFrame.Size = Size
+    windowFrame.Position = Position
+    windowFrame.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
+    windowFrame.BorderSizePixel = 0
     windowFrame.Parent = game.CoreGui
 
+    -- Add the title bar
+    local titleBar = Instance.new("Frame")
+    titleBar.Size = UDim2.new(1, 0, 0, 30)
+    titleBar.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    titleBar.Parent = windowFrame
+
+    -- Add the title label
     local titleLabel = Instance.new("TextLabel")
-    titleLabel.Size = UDim2.new(1, 0, 0, 30)
-    titleLabel.Position = UDim2.new(0, 0, 0, 0)
-    titleLabel.Text = options.Title or "Window Title"
+    titleLabel.Text = Title
+    titleLabel.Size = UDim2.new(1, -30, 1, 0)
     titleLabel.BackgroundTransparency = 1
-    titleLabel.TextSize = 20
     titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    titleLabel.Parent = windowFrame
+    titleLabel.TextSize = 16
+    titleLabel.TextXAlignment = Enum.TextXAlignment.Left
+    titleLabel.Parent = titleBar
 
-    local closeButton = Instance.new("TextButton")
-    closeButton.Size = UDim2.new(0, 50, 0, 30)
-    closeButton.Position = UDim2.new(1, -55, 0, 5)
-    closeButton.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-    closeButton.Text = "X"
-    closeButton.TextSize = 18
-    closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    closeButton.Parent = windowFrame
-    closeButton.MouseButton1Click:Connect(function()
-        windowFrame:Destroy()
-    end)
+    -- Close button
+    if CloseButton then
+        local closeButton = Instance.new("TextButton")
+        closeButton.Size = UDim2.new(0, 30, 0, 30)
+        closeButton.Position = UDim2.new(1, -30, 0, 0)
+        closeButton.BackgroundColor3 = Color3.fromRGB(255, 50, 50)
+        closeButton.Text = "X"
+        closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        closeButton.TextSize = 18
+        closeButton.Parent = titleBar
 
-    local minimizeButton = Instance.new("TextButton")
-    minimizeButton.Size = UDim2.new(0, 50, 0, 30)
-    minimizeButton.Position = UDim2.new(1, -110, 0, 5)
-    minimizeButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
-    minimizeButton.Text = "-"
-    minimizeButton.TextSize = 18
-    minimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-    minimizeButton.Parent = windowFrame
-    minimizeButton.MouseButton1Click:Connect(function()
-        windowFrame.Visible = not windowFrame.Visible
-    end)
+        closeButton.MouseButton1Click:Connect(function()
+            windowFrame:Destroy()
+        end)
+    end
 
-    local dragging = false
-    local dragInput, mousePos, framePos
+    -- Minimize button
+    if Minimize then
+        local minimizeButton = Instance.new("TextButton")
+        minimizeButton.Size = UDim2.new(0, 30, 0, 30)
+        minimizeButton.Position = UDim2.new(1, -60, 0, 0)
+        minimizeButton.BackgroundColor3 = Color3.fromRGB(50, 50, 255)
+        minimizeButton.Text = "_"
+        minimizeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        minimizeButton.TextSize = 18
+        minimizeButton.Parent = titleBar
 
-    titleLabel.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = true
-            mousePos = input.Position
-            framePos = windowFrame.Position
-        end
-    end)
+        minimizeButton.MouseButton1Click:Connect(function()
+            windowFrame.Visible = false
+        end)
+    end
 
-    titleLabel.InputChanged:Connect(function(input)
-        if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
-            local delta = input.Position - mousePos
-            windowFrame.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
-        end
-    end)
+    -- Add Draggable functionality
+    if Draggable then
+        local dragging = false
+        local dragInput, mousePos, framePos
 
-    titleLabel.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
-        end
-    end)
+        titleBar.InputBegan:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                dragging = true
+                mousePos = input.Position
+                framePos = windowFrame.Position
+            end
+        end)
+
+        titleBar.InputEnded:Connect(function(input)
+            if input.UserInputType == Enum.UserInputType.MouseButton1 then
+                dragging = false
+            end
+        end)
+
+        titleBar.InputChanged:Connect(function(input)
+            if dragging and input.UserInputType == Enum.UserInputType.MouseMovement then
+                local delta = input.Position - mousePos
+                windowFrame.Position = UDim2.new(framePos.X.Scale, framePos.X.Offset + delta.X, framePos.Y.Scale, framePos.Y.Offset + delta.Y)
+            end
+        end)
+    end
+
+    -- Smooth opening (optional)
+    if Smooth then
+        local tween = TweenService:Create(windowFrame, TweenInfo.new(1, Enum.EasingStyle.Elastic, Enum.EasingDirection.Out), {Size = Size})
+        tween:Play()
+    end
+
     return windowFrame
 end
 
-local function createIntro()
-    local introFrame = Instance.new("Frame")
-    introFrame.Size = UDim2.new(1, 0, 1, 0)
-    introFrame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-    introFrame.Position = UDim2.new(0, 0, 0, 0)
-    introFrame.Parent = game.CoreGui
-
-    local introLabel = Instance.new("TextLabel")
-    introLabel.Size = UDim2.new(1, 0, 1, 0)
-    introLabel.Text = "Loading..."
-    introLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-    introLabel.TextSize = 30
-    introLabel.BackgroundTransparency = 1
-    introLabel.Parent = introFrame
-
-    local introTween = TweenService:Create(introFrame, TweenInfo.new(2, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {Size = UDim2.new(0, 0, 0, 0)})
-    introTween:Play()
-
-    introTween.Completed:Connect(function()
-        introFrame:Destroy()
-    end)
-end
-
-local function loadUI()
-    createIntro()
-
-    wait(2)
-
-    local Window = BlustLib:CreateWindow({
-        Name = "Executor UI",
-        Title = "Main Window",
-        Size = UDim2.new(0, 600, 0, 400),
-        Position = UDim2.new(0.5, -300, 0.5, -200)
-    })
-end
-
-loadUI()
+return Window
