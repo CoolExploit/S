@@ -1,0 +1,45 @@
+local BlustLib = {}
+
+function BlustLib:CreateInstance(instanceType, properties)
+    local newInstance = Instance.new(instanceType)
+    for property, value in pairs(properties) do
+        newInstance[property] = value
+    end
+    return newInstance
+end
+
+function BlustLib:ToggleUIVisibility(uiElement)
+    uiElement.Visible = not uiElement.Visible
+end
+
+function BlustLib:MakeDraggable(uiElement)
+    local dragToggle = nil
+    local dragStart = nil
+    local startPos = nil
+
+    local function update(input)
+        local delta = input.Position - dragStart
+        uiElement.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+    end
+
+    uiElement.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            dragToggle = true
+            dragStart = input.Position
+            startPos = uiElement.Position
+            input.Changed:Connect(function()
+                if not input.UserInputState == Enum.UserInputState.Change then
+                    dragToggle = false
+                end
+            end)
+        end
+    end)
+
+    uiElement.InputChanged:Connect(function(input)
+        if dragToggle and input.UserInputType == Enum.UserInputType.MouseMovement then
+            update(input)
+        end
+    end)
+end
+
+return BlustLib
