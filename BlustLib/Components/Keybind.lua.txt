@@ -1,0 +1,56 @@
+local BlustLib = BlustLib or {}
+
+function BlustLib:CreateKeybind(section, options)
+    local keybindContainer = Instance.new("Frame")
+    keybindContainer.Name = "KeybindContainer"
+    keybindContainer.Size = UDim2.new(1, -12, 0, 40)
+    keybindContainer.BackgroundTransparency = 1
+    keybindContainer.Parent = section
+
+    local label = Instance.new("TextLabel")
+    label.Name = "Label"
+    label.Text = options.label or "Keybind"
+    label.Size = UDim2.new(1, 0, 0, 20)
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextSize = 14
+    label.Font = Enum.Font.Gotham
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = keybindContainer
+
+    local keybindLabel = Instance.new("TextLabel")
+    keybindLabel.Name = "KeybindLabel"
+    keybindLabel.Text = options.currentKey or "Press a key"
+    keybindLabel.Size = UDim2.new(1, 0, 0, 20)
+    keybindLabel.Position = UDim2.new(0, 0, 0, 20)
+    keybindLabel.BackgroundTransparency = 1
+    keybindLabel.TextColor3 = Color3.fromRGB(200, 200, 200)
+    keybindLabel.TextSize = 14
+    keybindLabel.Font = Enum.Font.Gotham
+    keybindLabel.TextXAlignment = Enum.TextXAlignment.Left
+    keybindLabel.Parent = keybindContainer
+
+    local userInputService = game:GetService("UserInputService")
+
+    local function updateKeybind(input)
+        if input.UserInputType == Enum.UserInputType.Keyboard then
+            keybindLabel.Text = input.KeyCode.Name
+            if options.callback and typeof(options.callback) == "function" then
+                options.callback(input.KeyCode.Name)
+            end
+        end
+    end
+
+    keybindLabel.MouseButton1Click:Connect(function()
+        keybindLabel.Text = "Press a key..."
+        userInputService.InputBegan:Connect(function(input, gameProcessed)
+            if not gameProcessed then
+                updateKeybind(input)
+            end
+        end)
+    end)
+
+    return keybindContainer
+end
+
+return BlustLib
