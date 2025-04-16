@@ -1,0 +1,84 @@
+local BlustLib = BlustLib or {}
+
+function BlustLib:CreateColorPicker(section, options)
+    -- Create the main color picker frame
+    local colorPicker = Instance.new("Frame")
+    colorPicker.Name = options.name or "ColorPicker"
+    colorPicker.Size = UDim2.new(1, -12, 0, 40)
+    colorPicker.BackgroundTransparency = 1
+    colorPicker.Parent = section
+
+
+    local label = Instance.new("TextLabel")
+    label.Name = "Label"
+    label.Text = options.name or "Color Picker"
+    label.Size = UDim2.new(1, -40, 0, 20)
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextSize = 14
+    label.Font = Enum.Font.Gotham
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = colorPicker
+
+
+    local colorButton = Instance.new("TextButton")
+    colorButton.Name = "ColorButton"
+    colorButton.Size = UDim2.new(0, 30, 0, 20)
+    colorButton.BackgroundColor3 = options.defaultColor or Color3.fromRGB(255, 255, 255)
+    colorButton.Position = UDim2.new(1, -40, 0, 20)
+    colorButton.Text = " "
+    colorButton.Parent = colorPicker
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 6)
+    corner.Parent = colorButton
+
+  
+    local pickerPopup = Instance.new("Frame")
+    pickerPopup.Name = "PickerPopup"
+    pickerPopup.Size = UDim2.new(0, 160, 0, 160)
+    pickerPopup.BackgroundColor3 = Color3.fromRGB(35, 35, 35)
+    pickerPopup.Position = UDim2.new(0, 0, 0, 70)
+    pickerPopup.BackgroundTransparency = 1
+    pickerPopup.Visible = false
+    pickerPopup.Parent = colorPicker
+
+    local function createSlider(name, min, max, yPosition, color)
+        local slider = Instance.new("Frame")
+        slider.Name = name
+        slider.Size = UDim2.new(1, -20, 0, 10)
+        slider.Position = UDim2.new(0, 10, 0, yPosition)
+        slider.BackgroundColor3 = color
+        slider.Parent = pickerPopup
+        return slider
+    end
+
+    local redSlider = createSlider("RedSlider", 0, 255, 0, Color3.fromRGB(255, 0, 0))
+    local greenSlider = createSlider("GreenSlider", 0, 255, 20, Color3.fromRGB(0, 255, 0))
+    local blueSlider = createSlider("BlueSlider", 0, 255, 40, Color3.fromRGB(0, 0, 255))
+
+    local function updateColor()
+        local selectedColor = Color3.fromRGB(
+            redSlider.Position.X.Offset, 
+            greenSlider.Position.X.Offset, 
+            blueSlider.Position.X.Offset
+        )
+        colorButton.BackgroundColor3 = selectedColor
+
+        if options.callback and typeof(options.callback) == "function" then
+            options.callback(selectedColor)
+        end
+    end
+
+    colorButton.MouseButton1Click:Connect(function()
+        pickerPopup.Visible = not pickerPopup.Visible
+    end)
+
+    redSlider.InputChanged:Connect(updateColor)
+    greenSlider.InputChanged:Connect(updateColor)
+    blueSlider.InputChanged:Connect(updateColor)
+
+    return colorPicker
+end
+
+return BlustLib
