@@ -21,16 +21,19 @@ local moduleURLs = {
 }
 
 for _, url in ipairs(moduleURLs) do
-    local success, moduleResult = pcall(function()
+    local success, result = pcall(function()
         return loadstring(game:HttpGet(url))()
     end)
-    if success and type(moduleResult) == "table" then
-        for k, v in pairs(moduleResult) do
-            BlustLib[k] = v
-        end
-    else
-        warn("Failed to load module: " .. url .. "\nError: " .. tostring(moduleResult))
+    if not success then
+        warn("Failed to load module: " .. url .. "\nError: " .. tostring(result))
     end
 end
+
+local Window = BlustLib:CreateWindow({
+    Name = "Executor UI",
+    Title = "Main Window",
+    Size = UDim2.new(0, 600, 0, 400),
+    Position = UDim2.new(0.5, -300, 0.5, -200)
+})
 
 return BlustLib
