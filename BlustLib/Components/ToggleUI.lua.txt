@@ -1,14 +1,22 @@
 local BlustLib = BlustLib or {}
 
 function BlustLib:CreateToggleButton(imageId)
-    -- Create the toggle button
     local toggleButton = Instance.new("ImageButton")
     toggleButton.Name = "ToggleButton"
-    toggleButton.Size = UDim2.new(0, 40, 0, 40)
-    toggleButton.Position = UDim2.new(0, 10, 0.5, -20) -- Adjust position as needed
-    toggleButton.BackgroundTransparency = 1
-    toggleButton.Image = imageId
-    toggleButton.ImageTransparency = 0.5
+    toggleButton.Size = UDim2.new(0, 40, 0, 40)  
+    toggleButton.Position = UDim2.new(0, 10, 0.5, -20)
+    toggleButton.BackgroundTransparency = 1 
+
+    if imageId then
+        toggleButton.Image = imageId 
+    else
+        toggleButton.BackgroundColor3 = Color3.fromRGB(255, 85, 85)
+        toggleButton.Text = "Toggle"  -- Text when no image is provided
+        toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+        toggleButton.Font = Enum.Font.Gotham
+        toggleButton.TextSize = 14
+    end
+
     toggleButton.Parent = game.Players.LocalPlayer.PlayerGui:WaitForChild("BlustHub")
 
     toggleButton.Active = true
