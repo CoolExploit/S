@@ -1,0 +1,49 @@
+local BlustLib = BlustLib or {}
+
+function BlustLib:CreateTextbox(section, options)
+    local textboxContainer = Instance.new("Frame")
+    textboxContainer.Name = "TextboxContainer"
+    textboxContainer.Size = UDim2.new(1, -12, 0, 40)
+    textboxContainer.BackgroundTransparency = 1
+    textboxContainer.Parent = section
+
+    local label = Instance.new("TextLabel")
+    label.Name = "Label"
+    label.Text = options.label or "Input"
+    label.Size = UDim2.new(1, 0, 0, 20)
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextSize = 14
+    label.Font = Enum.Font.Gotham
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = textboxContainer
+
+    local textbox = Instance.new("TextBox")
+    textbox.Name = "Textbox"
+    textbox.PlaceholderText = options.placeholder or "Enter text..."
+    textbox.Size = UDim2.new(1, 0, 0, 30)
+    textbox.Position = UDim2.new(0, 0, 0, 20)
+    textbox.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
+    textbox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    textbox.TextSize = 14
+    textbox.Font = Enum.Font.Gotham
+    textbox.ClearTextOnFocus = true
+    textbox.Parent = textboxContainer
+
+
+    local corner = Instance.new("UICorner")
+    corner.CornerRadius = UDim.new(0, 6)
+    corner.Parent = textbox
+
+    textbox.FocusLost:Connect(function(enterPressed)
+        if enterPressed then
+            if options.callback and typeof(options.callback) == "function" then
+                options.callback(textbox.Text)
+            end
+        end
+    end)
+
+    return textbox
+end
+
+return BlustLib
