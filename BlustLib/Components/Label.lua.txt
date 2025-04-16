@@ -1,0 +1,24 @@
+local BlustLib = BlustLib or {}
+
+function BlustLib:CreateLabel(section, text)
+    local labelFrame = Instance.new("Frame")
+    labelFrame.Name = "LabelFrame"
+    labelFrame.Size = UDim2.new(1, -12, 0, 30)
+    labelFrame.BackgroundTransparency = 1
+    labelFrame.Parent = section
+
+    local label = Instance.new("TextLabel")
+    label.Name = "Label"
+    label.Text = text or "Label"
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.TextColor3 = Color3.fromRGB(255, 255, 255)
+    label.TextSize = 14
+    label.Font = Enum.Font.Gotham
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.Parent = labelFrame
+
+    return label
+end
+
+return BlustLib
