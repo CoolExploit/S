@@ -8,29 +8,33 @@ local BlustLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/Cool
 ```
 This code loads the BlustLib module into your executor, and you're ready to begin creating UIs.
 
-Core Functions
-CreateWindow
-Creates the main window for your UI.
-
-
+ # Creates the main window for your UI.
+```lua
 BlustLib:CreateWindow({
     Name = "My Custom Window",         -- Window title
     Size = UDim2.new(0, 600, 0, 400),  -- Window size
     Position = UDim2.new(0.5, -300, 0.5, -200), -- Window position
     Title = "My Custom UI",            -- Window title text
 })
-CreateTab
-Creates a tab inside the window.
+```
 
+# CreateTab
+Creates a tab inside the window.
+```lua
 local myTab = BlustLib:CreateTab("Settings")  -- Tab name
-CreateSection
+```
+
+# CreateSection
 Creates a section inside a tab.
 
+```lua
 local mySection = BlustLib:CreateSection(myTab, "General Settings")  -- Section name
-CreateButton
+```
+
+# CreateButton
 Creates a button inside a section.
 
-
+```lua
 BlustLib:CreateButton(mySection, {
     Text = "Execute Script",         -- Button label
     Size = UDim2.new(0, 200, 0, 50), -- Button size
@@ -38,10 +42,12 @@ BlustLib:CreateButton(mySection, {
         print("Script executed!")   -- Callback when clicked
     end
 })
-CreateToggle
+```
+
+# CreateToggle
 Creates a toggle (checkbox) inside a section.
 
-
+```lua
 BlustLib:CreateToggle(mySection, {
     Text = "Enable Feature",         -- Toggle label
     Default = false,                 -- Default state (true/false)
@@ -49,10 +55,12 @@ BlustLib:CreateToggle(mySection, {
         print("Feature enabled: ", value)  -- Callback with the toggle state
     end
 })
-CreateColorPicker
+```
+
+# CreateColorPicker
 Creates a color picker inside a section.
 
-
+```lua
 BlustLib:CreateColorPicker(mySection, {
     Text = "Pick a color",         -- Color picker label
     Default = Color3.fromRGB(255, 0, 0), -- Default color (red)
@@ -60,9 +68,12 @@ BlustLib:CreateColorPicker(mySection, {
         print("Color selected: ", color)  -- Callback with the selected color
     end
 })
-CreateSlider
+```
+
+# CreateSlider
 Creates a slider inside a section.
 
+```lua
 BlustLib:CreateSlider(mySection, {
     Text = "Volume",                -- Slider label
     Min = 0,                        -- Minimum value
@@ -72,7 +83,9 @@ BlustLib:CreateSlider(mySection, {
         print("Volume set to: ", value)  -- Callback with the slider value
     end
 })
-CreateLabel
+```
+
+# CreateLabel
 Creates a label inside a section.
 
 
