@@ -146,7 +146,7 @@ Creates a button to toggle the visibility of the UI (optional image).
 BlustLib:CreateToggleButton("rbxassetid://YourImageId")  -- Toggle button with an image (optional)
 ```
 
-#Notify
+# Notify
 Displays a notification with a title, message, and duration.
 
 ```lua
