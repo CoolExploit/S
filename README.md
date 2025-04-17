@@ -88,15 +88,21 @@ BlustLib:CreateSlider(mySection, {
 # CreateLabel
 Creates a label inside a section.
 
-
+```lua
 BlustLib:CreateLabel(mySection, "This is a label")  -- Label text
-CreateParagraph
+```
+
+# CreateParagraph
 Creates a paragraph inside a section.
 
+```lua
 BlustLib:CreateParagraph(mySection, "Paragraph Title", "This is some content for the paragraph.")  -- Title and content
-CreateTextbox
+```
+
+# CreateTextbox
 Creates a textbox for user input.
 
+```lua
 BlustLib:CreateTextbox(mySection, {
     Text = "Enter your name",        -- Label text for the textbox
     Default = "",                   -- Default text in the textbox
@@ -104,10 +110,12 @@ BlustLib:CreateTextbox(mySection, {
         print("User entered: ", value)  -- Callback with the user input
     end
 })
-CreateKeybind
+```
+
+# CreateKeybind
 Creates a keybind input for user key assignment.
 
-
+```lua
 BlustLib:CreateKeybind(mySection, {
     Text = "Assign a key",           -- Label for the keybind
     Default = Enum.KeyCode.F,        -- Default key (F)
@@ -115,9 +123,12 @@ BlustLib:CreateKeybind(mySection, {
         print("Key pressed: ", value)  -- Callback with the pressed key
     end
 })
-CreateDropdown
+```
+
+# CreateDropdown
 Creates a dropdown menu inside a section.
 
+```lua
 BlustLib:CreateDropdown(mySection, {
     Text = "Choose Option",         -- Dropdown label text
     Options = {"Option 1", "Option 2", "Option 3"},  -- Options in the dropdown
@@ -126,20 +137,26 @@ BlustLib:CreateDropdown(mySection, {
         print("Option selected: ", value)  -- Callback with the selected option
     end
 })
-CreateToggleButton
+```
+
+# CreateToggleButton
 Creates a button to toggle the visibility of the UI (optional image).
 
-
+```lua
 BlustLib:CreateToggleButton("rbxassetid://YourImageId")  -- Toggle button with an image (optional)
-Notify
+```
+
+#Notify
 Displays a notification with a title, message, and duration.
 
-
+```lua
 BlustLib:Notify("Notification Title", "Your action was successful.", 5, "success")
-Complete Example
+```
+
+# Complete Example
 Here’s an example of how to use BlustLib to create a basic UI:
 
-
+```lua
 -- Load the library
 local BlustLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Init.lua.txt"))()
 
@@ -177,6 +194,8 @@ BlustLib:CreateToggle(settingsSection, {
 
 -- Show a notification
 BlustLib:Notify("Executor Loaded", "Your executor is ready to use!", 5, "info")
+```
+
 License
 BlustLib is released under the MIT License, which means it's free to use and modify.
 
