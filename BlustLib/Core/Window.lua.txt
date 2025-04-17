@@ -1,8 +1,8 @@
 local TweenService = game:GetService("TweenService")
-local Window = {}
+local BlustLib = {}
 
 -- Function to create the window
-function Window:CreateWindow(options)
+function BlustLib:CreateWindow(options)
     local Name = options.Name or "Window"
     local Title = options.Title or "Untitled"
     local Size = options.Size or UDim2.new(0, 600, 0, 400)
@@ -105,4 +105,4 @@ function Window:CreateWindow(options)
     return windowFrame
 end
 
-return Window
+return BlustLib
