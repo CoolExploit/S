@@ -4,7 +4,7 @@ BlustLib is a custom, user-friendly UI library designed for Roblox exploit scrip
 # Installation
 To use BlustLib, load it directly into your executor script using the following code:
 ```lua
-local BlustLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/CoolExploit/S/main/BlustLib/Init.lua.txt"))()
+local BlustLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/CoolExploit/S/refs/heads/main/BlustLib/Core/Init.lua.txt"))()
 ```
 This code loads the BlustLib module into your executor, and you're ready to begin creating UIs.
 
